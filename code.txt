@@ -1,0 +1,157 @@
+clear;clc;
+img_name='woman2.bmp';
+[Im,MAP]=imread(img_name);
+MAP(end:255,:)=0; 
+figure(1);imshow(Im,MAP);title('原始图像');
+figure(2);imhist(Im,MAP);
+axis([0 255 0 5000]); 
+title('woman2直方图（调用imhist函数）');
+
+%自己编写的求取图像直方图的程序
+GP=zeros(1,256);  %原图灰度概率密度函数
+IM=ind2gray(Im,MAP); 
+[m,n]=size(IM); 
+for k=0:255               %计算原图各灰度级像素个数num 
+GP(k+1)=length(find(IM==k))/(m*n);
+end                       %绘制原图直方图 
+figure(3);
+bar(0:255,GP);
+axis([0 256 0 0.02]);  
+title('woman2直方图（自己编写）');xlabel('灰度值');ylabel('像素的概率密度')
+
+
+
+clear;clc;
+[Im,MAP]=imread('citywall.bmp');
+MAP(end:255,:)=0; 
+figure(1);
+imshow(Im,MAP);
+title('citywall原始图像');
+% imwrite(Im,MAP,'./hw/hw3/result/citywall原始图像.bmp');
+figure(2)
+imhist(Im,MAP);
+GP=zeros(1,256);  %原图灰度概率密度函数
+IM=ind2gray(Im,MAP); 
+[m,n]=size(IM); 
+for k=0:255               %计算原图各灰度级像素个数num 
+GP(k+1)=length(find(IM==k))/(m*n);
+end                       %绘制原图直方图 
+bar(0:255,GP);
+axis([0 256 0 0.05]);  
+title('citywall原始图像直方图');  
+xlabel('灰度值');
+ylabel('像素的概率密度');
+figure(3);
+J=histeq(Im);
+imshow(J,MAP);
+title('citywall直方图均衡结果');
+% imwrite(J,MAP,'citywall直方图均衡结果.bmp');
+figure(4);
+GP=zeros(1,256);  %原图灰度概率密度函数
+IM=ind2gray(J,MAP); 
+[m,n]=size(IM); 
+for k=0:255               %计算原图各灰度级像素个数num 
+GP(k+1)=length(find(IM==k))/(m*n);
+end                       %绘制原图直方图 
+bar(0:255,GP);
+axis([0 256 0 0.05]);  
+title('citywall均衡化后的直方图');  
+xlabel('灰度值');
+ylabel('像素的概率密度');
+
+
+
+
+
+
+clear;clc;
+[IM,MAP]=imread('lena1.bmp');%选定要处理的图像名称 
+MAP(end:255,:)=0; 
+I=ind2gray(IM,MAP); 
+[IM2,MAP2]=imread('lena.bmp');%选定要匹配的直方图 
+I2=ind2gray(IM2,MAP2); 
+hsp=imhist(I2,256);
+g=histeq(I,hsp);
+figure;
+subplot(1,2,1);
+imshow(IM,MAP);
+% imwrite(IM,MAP,'./result/lena1原图.bmp');
+title('lena3.bmp原图');
+subplot(1,2,2);
+imshow(g,MAP2);
+% imwrite(g,MAP2,'./result/lena1直方图匹配增强后的图像.bmp');
+title('直方图匹配增强后的图像');
+figure;
+subplot(3,1,1);
+imhist(I,MAP); 
+axis([0 256 0 100000]);
+title('原图lena3.bmp的直方图');
+subplot(3,1,2);
+imhist(I2,MAP2);
+axis([0 256 0 100000]);
+% title(strcat('./result/匹配图lena.bmp的直方图'));
+subplot(3,1,3);
+imhist(g,MAP);
+axis([0 256 0 100000]);
+title('增强后图像直方图');
+
+
+
+
+clear;clc;
+A=imread('lena.bmp');
+figure(1);imshow(A);
+title('原始图像');
+n=7;
+M(1:n,1:n)=1;
+A1=wextend('2D','sym',A,n);
+A2=double(A1);
+[row,col]=size(A1);
+A3=A2;
+for i=n+1:row-n
+    for j=n+1:col-n 
+        M1=A2(i:i+(n-1),j:j+(n-1)).*M(1:n,1:n);
+        M2=histeq(uint8(M1));
+        A4=double(M2);
+        A3(i,j)=A4(4,4);
+    end
+end
+
+A5=A3(n+1:row-n,n+1:col-n);
+A5=uint8(A5);
+figure(2);imshow(A5);
+title('均衡后的图像');
+
+
+
+
+
+clear;clc;
+I=imread('elain.bmp');
+figure(1);
+imhist(I);
+title('elain的直方图');
+figure(2);
+subplot(1,2,1);
+imshow(I);
+title('elain原始图像');
+t1 =80;      %从直方图的峰谷处得阈值；
+[m,n]=size(I);
+I1=zeros(m,n); 
+for i=1:m     
+    for j=1:n    
+        if I(i,j)>t1        
+            I1(i,j)=1;     
+        else
+            I1(i,j)=0;   
+        end
+    end
+end
+subplot(1,2,2);
+imshow(I1);
+title('分割后的elain.bmp');
+
+
+
+
+
